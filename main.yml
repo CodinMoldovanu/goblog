@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  commit:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      #- name: Run a one-line script
+      #  run: echo Hello, world!
+      - name: Email
+        run: |
+          ssmtp personal@codin.ro
+          Subject: Goblog Master Update
+          An update to the master branch of the Goblog repo took place, we will start building again. Expect downtime & prepare for the worst
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          docker container stop goblog;
+          docker container rm goblog;
+          cd ~/repos/goblog
+          git pull
+          docker image rm goblog:latest
+          docker build --tag goblog:latest . --no-cache
+          docker run --publish 1333:1333 -e db_user_goblog -e db_pw_goblog -e db_name_goblog -e db_host_goblog -e keyFile_goblog -e certFile_goblog -v ~/repos:/certs --detach --name goblog goblog:latest
+          cd frontend
+          npm run build
+          cp -r dist ~/production/
