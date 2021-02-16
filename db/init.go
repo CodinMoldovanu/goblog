@@ -3,20 +3,23 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"os"
-
-	_ "github.com/lib/pq" //justify because postgreSQL not mysql
+	_ "github.com/lib/pq"
+	psh "github.com/platformsh/config-reader-go/v2"
+	libpq "github.com/platformsh/config-reader-go/v2/libpq"
 )
 
-var user = os.Getenv("db_user_goblog")     //"goblog"
-var password = os.Getenv("db_pw_goblog")   //"password"
-var database = os.Getenv("db_name_goblog") //"goblog"
-var hostname = os.Getenv("db_host_goblog") //"192.168.88.226"
+config, err := psh.NewRuntimeConfig()
+checkErr(err)
+
+credentials, err := config.Credentials("postgresql")
+checkErr(err)
+
+// Retrieve the formatted credentials.
+formatted, err := libpq.FormattedCredentials(credentials)
+checkErr(err)
 
 func createConn() *sql.DB {
-	connStr := "postgres://" + user + ":" + password + "@" + hostname + "/" + database + "?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", formatted)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,7 +31,7 @@ func createConn() *sql.DB {
 func Setup() int {
 
 	fmt.Println("Running db/Setup")
-	fmt.Println("Connecting to " + hostname + " on db " + database + ".")
+	// fmt.Println("Connecting to " + hostname + " on db " + database + ".")
 	db := createConn()
 	defer db.Close()
 	var tableCount int
