@@ -8,17 +8,18 @@ import (
 	libpq "github.com/platformsh/config-reader-go/v2/libpq"
 )
 
-config, err := psh.NewRuntimeConfig()
-checkErr(err)
 
-credentials, err := config.Credentials("postgresql")
-checkErr(err)
-
-// Retrieve the formatted credentials.
-formatted, err := libpq.FormattedCredentials(credentials)
-checkErr(err)
 
 func createConn() *sql.DB {
+	config, err := psh.NewRuntimeConfig()
+	checkErr(err)
+
+	credentials, err := config.Credentials("postgresql")
+	checkErr(err)
+
+	// Retrieve the formatted credentials.
+	formatted, err := libpq.FormattedCredentials(credentials)
+	checkErr(err)
 	db, err := sql.Open("postgres", formatted)
 	if err != nil {
 		log.Fatal(err)
@@ -27,6 +28,11 @@ func createConn() *sql.DB {
 	return db
 }
 
+func checkErr(Error e) {
+	if e != nil {
+		log.Fatal(err);
+	}
+}
 // Setup the database - Check if there are any tables and create them if not
 func Setup() int {
 
