@@ -3,12 +3,13 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
+	// Justified.
 	_ "github.com/lib/pq"
 	psh "github.com/platformsh/config-reader-go/v2"
 	libpq "github.com/platformsh/config-reader-go/v2/libpq"
 )
-
-
 
 func createConn() *sql.DB {
 	config, err := psh.NewRuntimeConfig()
@@ -28,11 +29,12 @@ func createConn() *sql.DB {
 	return db
 }
 
-func checkErr(Error e) {
+func checkErr(e error) {
 	if e != nil {
-		log.Fatal(err);
+		log.Fatal(e)
 	}
 }
+
 // Setup the database - Check if there are any tables and create them if not
 func Setup() int {
 
