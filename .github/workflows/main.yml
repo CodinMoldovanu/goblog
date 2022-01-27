@@ -23,9 +23,9 @@ jobs:
       # Runs a single command using the runners shell
       #- name: Run a one-line script
       #  run: echo Hello, world!
-      - name: Email
-        run: |
-          printf "Subject: Goblog Master Update\n\nAn update to the master branch of the Goblog repo took place, we will start building again. Expect downtime & prepare for the worst" | ssmtp personal@codin.ro
+      # - name: Email
+      #   run: |
+      #     printf "Subject: Goblog Master Update\n\nAn update to the master branch of the Goblog repo took place, we will start building again. Expect downtime & prepare for the worst" | ssmtp personal@codin.ro
 
       - name: Env
         run: |
