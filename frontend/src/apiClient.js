@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import axios from 'axios';
 
-const BASE_URI = 'https://blog.codin.ro:1333';
+const BASE_URI = 'https://ghost.codin.sh:1333';
 const client = axios.create({
   baseURL: BASE_URI,
   json: true
